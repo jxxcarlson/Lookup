@@ -8,6 +8,27 @@ defmodule Lookup do
 
   ## PARSE ##
 
+  @doc """
+  Analyze the list of arguments and options supplied by the user and
+  return an atom or tuple that can be processed to carry out an action.
+
+  # Example 1
+  iex > Lookup.parse_args(["--help"])
+  :help
+
+  # Example 2
+  iex > Lookup.parse_args(["--add", "Shakespeare", "::", "an", "English", "playright"])
+        {:add, "Shakespeare :: an English playright"}
+
+  # Example 3
+  Lookup.parse_args(["--title", "Shakespeare"])
+  {:title, "Shakespeare"}
+
+  # Example 4
+  iex > Lookup.parse_args(["Shakespeare"])
+  {:title, "Shakespeare"}
+"""
+
   def parse_args(argv) do
 
       parse = OptionParser.parse(argv, switches:
@@ -19,6 +40,8 @@ defmodule Lookup do
         { [help: true], _, _ } -> :help
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
         { [title: true], list, _ } -> {:title, List.first(list)}
+        { _, list, _ } -> {:title, List.first(list)}
+
         _ -> :help
 
       end
@@ -32,26 +55,41 @@ defmodule Lookup do
     IO.puts "No arguments given"
   end
 
+  @doc "Display user help"
+
   def process(:help) do
     IO.puts """
 
-      usage: lookup foo             -- lookup notes containing 'foo'
-             lookup foo bar         -- lookup notes containing 'foo' and 'bar'
-             lookup --title foo     -- search for notes with titel 'foo'
-             lookup --add Magic :: It does not exist.
-                                    -- add a note with title 'Magic' and body 'It does not exist,'
+      lookup foo            -- lookup notes containing 'foo'
+      * lookup foo bar      -- lookup notes containing 'foo' and 'bar'
+      lookup --title foo    -- search for notes with title 'foo'
+      lookup --add Magic :: It does not exist.
+                            -- add a note with title 'Magic' and body 'It does not exist,'
 
-             lookup -a ...          -- short form of 'lookup --add'
-             lookup -t ...          -- short form of 'lookup --title'
+      lookup -a ...         -- short form of 'lookup --add'
+      lookup -t ...         -- short form of 'lookup --title'
+
+      ---
+      * Not yet implemented
     """
 
   end
 
 
+  @doc """
+  process({:add, arg}) -- Add the element specified by 'arg' to the database.  It is assumened that arg is a string
+  of the form "TiTLE :: CONTENT".  This string is first split into TITLE and CONTENT,
+  after which Lookup.Note.add(TiTLE, CONTENT) is called.
+  """
   def process({:add, arg}) do
     [title, content] = String.split( arg, ["::"]) |> Enum.map(fn x -> String.trim(x) end)
     Lookup.Note.add(title, content)
   end
+
+  @doc """
+  process({:title, arg}) -- Search for records with title mathching arg.  The match is
+  case insenstie and not strict.  Thus "speed" matches "Speed of light"
+  """
 
   def process({:title, arg}) do
     # Lookup.Note

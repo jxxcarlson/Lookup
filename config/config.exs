@@ -5,7 +5,6 @@ config :lookup, Lookup.Repo,
   database: "lookup_repo",
   user: "postgres",
   hostname: "localhost"
-  # loggers: [{Ecto.LogEntry, :log, [:error]}]
 
 config :logger, level: :warn
 
