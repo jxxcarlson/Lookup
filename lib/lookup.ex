@@ -59,7 +59,7 @@ defmodule Lookup do
     Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
     # |> Ecto.Query.where(title: ^arg)
     |> Lookup.Repo.all
-    |> Enum.map(fn x -> x.content end)
+    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
     IO.puts ""
     # |> IO.inspect
