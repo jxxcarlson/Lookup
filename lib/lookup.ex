@@ -14,15 +14,15 @@ defmodule Lookup do
 
       usage: lookup foo         -- lookup notes containing 'foo'
              lookup foo bar     -- lookup notes containing 'foo' and 'bar'
-             lookup --add magic :: It does not exist
-                                -- add a note with title 'magic' and body 'It does not exist'
+             lookup --add Magic :: It does not exist.
+                                -- add a note with title 'Magic' and body 'It does not exist,'
              lookup -a ...      -- short form of 'lookup --add'
     """
 
   end
 
 
-  def process(arg) do
+  def process({:add, arg}) do
     [title, content] = String.split( arg, ["::"]) |> Enum.map(fn x -> String.trim(x) end)
     Lookup.Note.add(title, content)
   end
@@ -34,8 +34,8 @@ defmodule Lookup do
     case parse do
 
       { [help: true], _, _ } -> :help
-      { [add: true], list, _ } -> Enum.join(list, " ")
-      { _, list, _ } -> Enum.join(list, " ")
+      { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
+      { _, list, _ } -> {:search, Enum.join(list, " ")}
       _ -> :help
 
     end
