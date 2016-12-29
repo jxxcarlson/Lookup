@@ -84,6 +84,7 @@ defmodule Lookup do
   def process({:add, arg}) do
     [title, content] = String.split( arg, ["::"]) |> Enum.map(fn x -> String.trim(x) end)
     Lookup.Note.add(title, content)
+    IO.puts "Added: #{title}"
   end
 
   @doc """
