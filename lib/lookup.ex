@@ -54,8 +54,10 @@ defmodule Lookup do
   end
 
   def process({:title, arg}) do
-    Lookup.Note
-    |> Ecto.Query.where(title: ^arg)
+    # Lookup.Note
+    # |> Lookup.Repo.all(from p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
+    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
+    # |> Ecto.Query.where(title: ^arg)
     |> Lookup.Repo.all
     |> Enum.map(fn x -> x.content end)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
