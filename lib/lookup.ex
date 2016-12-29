@@ -32,15 +32,22 @@ defmodule Lookup do
   def parse_args(argv) do
 
       parse = OptionParser.parse(argv, switches:
-        [help: :boolean, add: :boolean, title: :boolean],
-        aliases: [h: :help, a: :add, t: :title])
+        [help: :boolean,
+        add: :boolean,
+        title: :boolean,
+        text: :boolean,
+        count: :boolean],
+        aliases: [h: :help, a: :add, t: :title, T: :text])
 
       case parse do
 
         { [help: true], _, _ } -> :help
+        { [count: true], _, _ } -> :count
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
         { [title: true], list, _ } -> {:title, List.first(list)}
+        { [text: true], list, _ } -> {:text, List.first(list)}
         { _, list, _ } -> {:title, List.first(list)}
+
 
         _ -> :help
 
@@ -55,19 +62,22 @@ defmodule Lookup do
     IO.puts "No arguments given"
   end
 
-  @doc "Display user help"
-
+  @doc """
+  Display user help
+  """
   def process(:help) do
     IO.puts """
 
       lookup foo            -- lookup notes containing 'foo'
       * lookup foo bar      -- lookup notes containing 'foo' and 'bar'
       lookup --title foo    -- search for notes with title 'foo'
+      lookup --text foo     -- search for notes with 'foo' in the text
       lookup --add Magic :: It does not exist.
                             -- add a note with title 'Magic' and body 'It does not exist,'
 
       lookup -a ...         -- short form of 'lookup --add'
       lookup -t ...         -- short form of 'lookup --title'
+      lookup -T ...         -- short form of 'lookup --text'
 
       ---
       * Not yet implemented
@@ -88,10 +98,9 @@ defmodule Lookup do
   end
 
   @doc """
-  process({:title, arg}) -- Search for records with title mathching arg.  The match is
+  process({:title, arg}) -- Search for records with title matching arg.  The match is
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
-
   def process({:title, arg}) do
     # Lookup.Note
     # |> Lookup.Repo.all(from p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
@@ -103,6 +112,26 @@ defmodule Lookup do
     IO.puts ""
     # |> IO.inspect
   end
+
+  @doc """
+    process({:text, arg}) -- Search for records with text matching arg.  The match is
+    case insenstie and not strict.  Thus "speed" matches "Speed of light"
+    """
+    def process({:text, arg}) do
+      Ecto.Query.from(p in Lookup.Note, where: ilike(p.content, ^"%#{arg}%"))
+      |> Lookup.Repo.all
+      |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+      |> Enum.map(fn x -> IO.puts "\n" <> x end)
+      IO.puts ""
+    end
+
+  def process(:count) do
+   # from p in Lookup.Note, select: count(p.id)
+    notes = Lookup.Repo.all(Lookup.Note)
+    IO.puts Enum.count(notes)
+   # IO.inspect(foo)
+  end
+
 
 
   ## START ##
