@@ -1,0 +1,16 @@
+
+----
+Don't forget to add your new repo to your supervision tree
+(typically in lib/lookup.ex):
+
+    supervisor(Lookup.Repo, [])
+
+And to add it to the list of ecto repositories in your
+configuration files (so Ecto tasks work as expected):
+
+    config :lookup,
+      ecto_repos: [Lookup.Repo]
+
+----
+
+https://hexdocs.pm/ecto/getting-started.html[Ecto docs]
