@@ -1,0 +1,29 @@
+== Lookup
+
+*Lookup* is a command-line program for interacting with a database of notes.
+A note consists of two fields: title and contents, e.g.,
+
+----
+  Title: Speed of light
+  Contents: 300,000 km/sec
+----
+
+Once everything is properly set up, you can add records like this:
+
+----
+  $ lu -a Speed of light:: 300,000 km/sec
+----
+
+If the entry is long, just keep typing. Type `<return>` when finished.
+
+To search for a note by title, imitate this example:
+
+----
+  $ lu -t speed
+----
+
+
+=== Installation
+
+
+
