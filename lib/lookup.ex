@@ -74,6 +74,7 @@ defmodule Lookup do
       lookup --text foo bar   -- search for notes with 'foo and bar' in text or contents
       lookup --add Magic :: It does not exist.
                               -- add a note with title 'Magic' and body 'It does not exist,'
+      lookup --count          -- report number of notes in databasse
 
       lookup -a ...           -- short form of 'lookup --add'
       lookup -t ...           -- short form of 'lookup --title'
