@@ -102,27 +102,31 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:title, arg}) do
-    # Lookup.Note
-    # |> Lookup.Repo.all(from p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
-    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
-    # |> Ecto.Query.where(title: ^arg)
+    notes = Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
     |> Lookup.Repo.all
-    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+
+    notes |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
+
+    IO.puts "---"
+    IO.puts Enum.count(notes)
     IO.puts ""
-    # |> IO.inspect
   end
 
   @doc """
-  process({:text, arg}) -- Search for records with text matching arg.  The match is
+  process({:text, arg}) -- Search for records with text or title matching arg.  The match is
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:text, arg}) do
-    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
+    notes = Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
     |> Lookup.Repo.all
     |> Lookup.Note.filter_records_with_term_list(tl(arg))
-    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+
+    notes |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
+
+    IO.puts "---"
+    IO.puts Enum.count(notes)
     IO.puts ""
   end
 
