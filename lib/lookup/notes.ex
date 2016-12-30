@@ -58,7 +58,9 @@ defmodule Lookup.Note do
 
     case {list, term_list} do
       {list,[]} -> list
-      {list, term_list} -> filter_records_with_term_list( filter_records_with_term(list, hd(term_list)), tl(term_list) )
+      {list, term_list} -> filter_records_with_term_list(
+            filter_records_with_term(list, hd(term_list)), tl(term_list)
+          )
     end
 
   end

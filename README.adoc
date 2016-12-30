@@ -1,7 +1,7 @@
 :toc:
 :sectnums:
 
-== Introduction
+== Using Lookup
 
 *Lookup* is a command-line program for interacting with a database of notes.
 A note consists of two fields: title and contents, e.g.,
@@ -10,6 +10,7 @@ A note consists of two fields: title and contents, e.g.,
   Title: Speed of light
   Contents: 300,000 km/sec
 ----
+We also refer to the contents of a note as its text.
 
 Once everything is properly set up, you can add records like this:
 
@@ -24,20 +25,36 @@ To search for a note by title, imitate this example:
 ----
   $ lu -t speed
 ----
-
+To search on both text and title, do this:
+----
+  $ lu speed
+----
+The query
+----
+  $ lu speed light
+----
+will return notes which contain both 'speed' and 'light'
+in title or text
 
 == Installation
 
-Coming soon
+(More info coming soon.)
+
+In the directory in which `lookup` is installed, you
+can use the commands `./lookup foo bar`, `./lookup -a Speed of light:: 300,000 km/sec`, etc.
+However, it is best to make an alias along the lines of
+----
+  alias lu='path-to-lookup-directory/lookup'
+----
+Then you can say
+`lu foo bar`, `lu -a Speed of light:: 300,000 km/sec`, etc., from any directory.
 
 == To do
 
-. Clean up the code
-. More tests
-. Add full text search of contents
-. Add timestamps
+. Make tests independent of state of database
+. Add JSON export for backup
 . Order search results by most recent first
-. Develop API server
+. Develop API server and web browser front end
 
 
 

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Introduction</title>
+<title>Using Lookup</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_using_lookup">1. Using Lookup</a></li>
 <li><a href="#_installation">2. Installation</a></li>
 <li><a href="#_to_do">3. To do</a></li>
 </ul>
@@ -430,7 +430,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_introduction">1. Introduction</h2>
+<h2 id="_using_lookup">1. Using Lookup</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Lookup</strong> is a command-line program for interacting with a database of notes.
@@ -441,6 +441,9 @@ A note consists of two fields: title and contents, e.g.,</p>
 <pre>  Title: Speed of light
   Contents: 300,000 km/sec</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>We also refer to the contents of a note as its text.</p>
 </div>
 <div class="paragraph">
 <p>Once everything is properly set up, you can add records like this:</p>
@@ -461,13 +464,47 @@ A note consists of two fields: title and contents, e.g.,</p>
 <pre>  $ lu -t speed</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>To search on both text and title, do this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ lu speed</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The query</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ lu speed light</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will return notes which contain both 'speed' and 'light'
+in title or text</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_installation">2. Installation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Coming soon</p>
+<p>(More info coming soon.)</p>
+</div>
+<div class="paragraph">
+<p>In the directory in which <code>lookup</code> is installed, you
+can use the commands <code>./lookup foo bar</code>, <code>./lookup -a Speeed of light:: 300,000 km/sec</code>, etc.
+However, it is best to make an alias along the lines of</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  alias lu='path-to-lookup-directory/lookup'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can say
+<code>lu foo bar</code>, <code>lu -a Speeed of light:: 300,000 km/sec</code>, etc., from any directory.</p>
 </div>
 </div>
 </div>
@@ -477,13 +514,10 @@ A note consists of two fields: title and contents, e.g.,</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Clean up the code</p>
+<p>Make tests independent of state of database</p>
 </li>
 <li>
-<p>More tests</p>
-</li>
-<li>
-<p>Add full text search of contents</p>
+<p>Add JSON export for backup</p>
 </li>
 <li>
 <p>Add timestamps</p>
@@ -492,7 +526,7 @@ A note consists of two fields: title and contents, e.g.,</p>
 <p>Order search results by most recent first</p>
 </li>
 <li>
-<p>Develop API server</p>
+<p>Develop API server and web browser front end</p>
 </li>
 </ol>
 </div>
@@ -501,7 +535,7 @@ A note consists of two fields: title and contents, e.g.,</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-29 12:56:17 EST
+Last updated 2016-12-30 05:26:29 EST
 </div>
 </div>
 </body>
