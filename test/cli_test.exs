@@ -11,21 +11,21 @@ defmodule CliTest do
   end
 
   test "one value returned as list if one given" do
-    assert parse_args(["foo"]) == "foo"
+    assert parse_args(["foo"]) == {:title, ["foo"]}
   end
 
   test "two values returned as list if two given" do
-    assert parse_args(["foo", "bar"]) == "foo bar"
+    assert parse_args(["foo", "bar"]) == {:title, ["foo", "bar"]}
   end
 
   test "one value returned as list if one given with option :add" do
-    assert parse_args(["--add", "foo"]) == "foo"
-    assert parse_args(["-a", "foo"]) == "foo"
+    assert parse_args(["--add", "foo"]) == {:add, "foo"}
+    assert parse_args(["-a", "foo"]) == {:add, "foo"}
   end
 
   test "two values returned as list if two given with option :add" do
-    assert parse_args(["--add", "foo", "bar"]) == "foo bar"
-    assert parse_args(["-a", "foo", "bar"]) == "foo bar"
+    assert parse_args(["--add", "foo", "bar"]) == {:add, "foo bar"}
+    assert parse_args(["-a", "foo", "bar"]) == {:add, "foo bar"}
   end
 
 end

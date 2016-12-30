@@ -44,10 +44,9 @@ defmodule Lookup do
         { [help: true], _, _ } -> :help
         { [count: true], _, _ } -> :count
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
-        { [title: true], list, _ } -> {:title, List.first(list)}
-        { [text: true], list, _ } -> {:text, List.first(list)}
-        { _, list, _ } -> {:title, List.first(list)}
-
+        { [title: true], list, _ } -> {:title, list}
+        { [text: true], list, _ } -> {:text, list}
+        { _, list, _ } -> {:text, list}
 
         _ -> :help
 
@@ -68,16 +67,17 @@ defmodule Lookup do
   def process(:help) do
     IO.puts """
 
-      lookup foo            -- lookup notes containing 'foo'
-      * lookup foo bar      -- lookup notes containing 'foo' and 'bar'
-      lookup --title foo    -- search for notes with title 'foo'
-      lookup --text foo     -- search for notes with 'foo' in the text
+      lookup foo              -- lookup notes containing 'foo' in text or contents
+      lookup foo bar          -- lookup notes containing 'foo' and 'bar' in text or contents
+      lookup --title foo      -- search for notes with 'foo' in title
+      lookup --text foo       -- search for notes with 'foo' in text or contents
+      lookup --text foo bar   -- search for notes with 'foo and bar' in text or contents
       lookup --add Magic :: It does not exist.
-                            -- add a note with title 'Magic' and body 'It does not exist,'
+                              -- add a note with title 'Magic' and body 'It does not exist,'
 
-      lookup -a ...         -- short form of 'lookup --add'
-      lookup -t ...         -- short form of 'lookup --title'
-      lookup -T ...         -- short form of 'lookup --text'
+      lookup -a ...           -- short form of 'lookup --add'
+      lookup -t ...           -- short form of 'lookup --title'
+      lookup -T ...           -- short form of 'lookup --text'
 
       ---
       * Not yet implemented
@@ -104,7 +104,7 @@ defmodule Lookup do
   def process({:title, arg}) do
     # Lookup.Note
     # |> Lookup.Repo.all(from p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
-    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{arg}%"))
+    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
     # |> Ecto.Query.where(title: ^arg)
     |> Lookup.Repo.all
     |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
@@ -114,16 +114,17 @@ defmodule Lookup do
   end
 
   @doc """
-    process({:text, arg}) -- Search for records with text matching arg.  The match is
-    case insenstie and not strict.  Thus "speed" matches "Speed of light"
-    """
-    def process({:text, arg}) do
-      Ecto.Query.from(p in Lookup.Note, where: ilike(p.content, ^"%#{arg}%"))
-      |> Lookup.Repo.all
-      |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
-      |> Enum.map(fn x -> IO.puts "\n" <> x end)
-      IO.puts ""
-    end
+  process({:text, arg}) -- Search for records with text matching arg.  The match is
+  case insenstie and not strict.  Thus "speed" matches "Speed of light"
+  """
+  def process({:text, arg}) do
+    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
+    |> Lookup.Repo.all
+    |> Lookup.Note.filter_records_with_term_list(tl(arg))
+    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+    |> Enum.map(fn x -> IO.puts "\n" <> x end)
+    IO.puts ""
+  end
 
   def process(:count) do
    # from p in Lookup.Note, select: count(p.id)

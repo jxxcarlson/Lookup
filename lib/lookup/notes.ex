@@ -28,4 +28,39 @@ defmodule Lookup.Note do
     Lookup.Repo.insert(_changeset)
   end
 
+  ################
+
+  def filter_list_with_term(list, term) do
+
+    Enum.filter(list, fn(x) -> String.contains?(x, term) end)
+
+  end
+
+
+  def filter_list_with_term_list(list, term_list) do
+
+    case {list, term_list} do
+      {list,[]} -> list
+      {list, term_list} -> filter_list_with_term_list( filter_list_with_term(list, hd(term_list)), tl(term_list) )
+    end
+
+  end
+
+  ################
+
+  def filter_records_with_term(list, term) do
+
+    Enum.filter(list, fn(x) -> String.contains?(x.title, term) or String.contains?(x.content, term) end)
+
+  end
+
+  def filter_records_with_term_list(list, term_list) do
+
+    case {list, term_list} do
+      {list,[]} -> list
+      {list, term_list} -> filter_records_with_term_list( filter_records_with_term(list, hd(term_list)), tl(term_list) )
+    end
+
+  end
+
 end
