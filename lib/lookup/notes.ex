@@ -1,6 +1,5 @@
 defmodule Lookup.Note do
   use Ecto.Schema
-  # use Poison
 
   # https://github.com/devinus/poison
 
@@ -98,6 +97,11 @@ defmodule Lookup.Note do
   def insert_from_json(str) do
     json = string_to_JSON(str)
     Lookup.Note.add(json["title"], json["content"])
+  end
+
+  def random(p \\ 10) do
+    {_ok, result} = Ecto.Adapters.SQL.query(Lookup.Repo, "SELECT title, content FROM notes TABLESAMPLE BERNOULLI(#{p})")
+    result.rows
   end
 
 end

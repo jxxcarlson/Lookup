@@ -36,13 +36,22 @@ defmodule Lookup do
         add: :boolean,
         title: :boolean,
         text: :boolean,
-        count: :boolean],
-        aliases: [h: :help, a: :add, t: :title, T: :text, c: :count])
+        count: :boolean,
+        random: :boolean],
+
+        aliases: [
+            h: :help,
+            a: :add,
+            t: :title,
+            T: :text,
+            c: :count,
+            r: :random])
 
       case parse do
 
         { [help: true], _, _ } -> :help
         { [count: true], _, _ } -> :count
+        { [random: true], _, _} -> :random
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
         { [title: true], list, _ } -> {:title, list}
         { [text: true], list, _ } -> {:text, list}
@@ -75,9 +84,11 @@ defmodule Lookup do
       lookup --add Magic :: It does not exist.
                               -- add a note with title 'Magic' and body 'It does not exist,'
       lookup --count          -- report number of notes in databasse
+      lookup --random         -- return random selection of notes
 
       lookup -a ...           -- short form of 'lookup --add'
       lookup -c               -- short form of 'lookup --count'
+      lookup -r               -- short form of 'lookup --random'
       lookup -t ...           -- short form of 'lookup --title'
       lookup -T ...           -- short form of 'lookup --text'
 
@@ -137,6 +148,12 @@ defmodule Lookup do
     notes = Lookup.Repo.all(Lookup.Note)
     IO.puts Enum.count(notes)
    # IO.inspect(foo)
+  end
+
+  def process(:random) do
+    IO.puts ""
+    Lookup.Note.random
+    |> Enum.map(fn (item) -> IO.puts(hd(item) <> ":: " <> hd(tl(item)) <> "\n") end)
   end
 
 
