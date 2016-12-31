@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Using Lookup</title>
+<title>What is Lookup?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,15 +422,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_using_lookup">1. Using Lookup</a></li>
-<li><a href="#_installation">2. Installation</a></li>
-<li><a href="#_to_do">3. To do</a></li>
+<li><a href="#_what_is_lookup">1. What is Lookup?</a></li>
+<li><a href="#_options">2. Options</a></li>
+<li><a href="#_installation">3. Installation</a></li>
+<li><a href="#_to_do">4. To do</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_using_lookup">1. Using Lookup</h2>
+<h2 id="_what_is_lookup">1. What is Lookup?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Lookup</strong> is a command-line program for interacting with a database of notes.
@@ -487,14 +488,23 @@ in title or text</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installation">2. Installation</h2>
+<h2 id="_options">2. Options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use <code>lu -h</code> to get help and see a list of command options.
+For example, <code>lu -r</code> returns a random list of notes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">3. Installation</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>(More info coming soon.)</p>
 </div>
 <div class="paragraph">
 <p>In the directory in which <code>lookup</code> is installed, you
-can use the commands <code>./lookup foo bar</code>, <code>./lookup -a Speeed of light:: 300,000 km/sec</code>, etc.
+can use the commands <code>./lookup foo bar</code>, <code>./lookup -a Speed of light:: 300,000 km/sec</code>, etc.
 However, it is best to make an alias along the lines of</p>
 </div>
 <div class="listingblock">
@@ -504,12 +514,12 @@ However, it is best to make an alias along the lines of</p>
 </div>
 <div class="paragraph">
 <p>Then you can say
-<code>lu foo bar</code>, <code>lu -a Speeed of light:: 300,000 km/sec</code>, etc., from any directory.</p>
+<code>lu foo bar</code>, <code>lu -a Speed of light:: 300,000 km/sec</code>, etc., from any directory.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_to_do">3. To do</h2>
+<h2 id="_to_do">4. To do</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -518,9 +528,6 @@ However, it is best to make an alias along the lines of</p>
 </li>
 <li>
 <p>Add JSON export for backup</p>
-</li>
-<li>
-<p>Add timestamps</p>
 </li>
 <li>
 <p>Order search results by most recent first</p>
@@ -535,7 +542,7 @@ However, it is best to make an alias along the lines of</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-30 05:26:29 EST
+Last updated 2016-12-31 08:44:17 EST
 </div>
 </div>
 </body>

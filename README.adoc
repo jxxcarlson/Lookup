@@ -1,7 +1,7 @@
 :toc:
 :sectnums:
 
-== Using Lookup
+== What is Lookup?
 
 *Lookup* is a command-line program for interacting with a database of notes.
 A note consists of two fields: title and contents, e.g.,
@@ -35,6 +35,11 @@ The query
 ----
 will return notes which contain both 'speed' and 'light'
 in title or text
+
+== Options
+
+Use `lu -h` to get help and see a list of command options.
+For example, `lu -r` returns a random list of notes.
 
 == Installation
 
