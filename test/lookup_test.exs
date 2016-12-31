@@ -42,5 +42,11 @@ defmodule LookupTest do
        assert length(records) == 22
        assert length(Lookup.Note.filter_records_with_term_list(records, ["1", "c"]))  == 1
      end
+
+     test "make record from string representing JSON" do
+       # str = "{\"updated_at\":\"2016-01-01T00:00:01.000000\",\"title\":\"Yada yada\",\"inserted_at\":\"2016-01-01T00:00:01.000000\",\"content\":\"Mumbo jumbo.\"}"
+       str = "{\"title\":\"Yada yada\",\"content\":\"Mumbo jumbo.\"}"
+       Lookup.Note.insert_from_json(str)
+     end
   
 end

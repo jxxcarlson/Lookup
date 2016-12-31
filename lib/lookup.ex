@@ -37,7 +37,7 @@ defmodule Lookup do
         title: :boolean,
         text: :boolean,
         count: :boolean],
-        aliases: [h: :help, a: :add, t: :title, T: :text])
+        aliases: [h: :help, a: :add, t: :title, T: :text, c: :count])
 
       case parse do
 
@@ -77,6 +77,7 @@ defmodule Lookup do
       lookup --count          -- report number of notes in databasse
 
       lookup -a ...           -- short form of 'lookup --add'
+      lookup -c               -- short form of 'lookup --count'
       lookup -t ...           -- short form of 'lookup --title'
       lookup -T ...           -- short form of 'lookup --text'
 

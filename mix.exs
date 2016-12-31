@@ -13,7 +13,8 @@ defmodule Lookup.Mixfile do
 
   defp deps do
     [{:ecto, "~> 2.0"},
-    {:postgrex, "~> 0.11"}]
+    {:postgrex, "~> 0.11"},
+    {:poison, "~> 3.0"}]
   end
 
   # Configuration for the OTP application

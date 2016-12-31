@@ -1,9 +1,17 @@
 defmodule Lookup.Note do
   use Ecto.Schema
+  # use Poison
+
+  # https://github.com/devinus/poison
+
+  @derive [Poison.Encoder]
+    # defstruct [:title, :content, :inserted_at, :updated_at]
 
   schema "notes" do
     field :title, :string
     field :content, :string
+
+    timestamps
   end
 
   def changeset(note, params \\ %{}) do
@@ -23,9 +31,8 @@ defmodule Lookup.Note do
   """
 
   def add(title \\ "Untitled", content) do
-    note = %Lookup.Note{}
-    _changeset = changeset(note, %{title: title, content: content})
-    Lookup.Repo.insert(_changeset)
+    changeset(%Lookup.Note{}, %{title: title, content: content})
+    |> Lookup.Repo.insert
   end
 
   ################
@@ -63,6 +70,34 @@ defmodule Lookup.Note do
           )
     end
 
+  end
+
+  def to_struct(record) do
+    %{  title: record.title,
+        content: record.content,
+        inserted_at: record.inserted_at,
+        updated_at: record.updated_at
+    }
+  end
+
+  def to_JSON(record) do
+      "{\"title\": \"#{record.title}\", \"content\": \"#{record.content}\", \"inserted_at\": \"#{record.inserted_at}\", \"updated_at\": \"#{record.updated_at}\"}"
+    end
+
+  def record_to_JSON(id) do
+    Lookup.Note
+    |> Lookup.Repo.get(id)
+    |> to_struct
+    |> Poison.encode!
+  end
+
+  def string_to_JSON(str) do
+     Poison.decode!(str)
+  end
+
+  def insert_from_json(str) do
+    json = string_to_JSON(str)
+    Lookup.Note.add(json["title"], json["content"])
   end
 
 end
