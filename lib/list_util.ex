@@ -14,7 +14,17 @@ defmodule ListUtil do
       return = {[head | left], right}
     end
 
-    #Clause 2
+ @doc """
+  split(list, _count) -- Split list into two parts,
+  the first with _count elements. Return a tuple
+  with the wo parts.
+
+  # Example:
+      # iex(2)> ListUtil.split([1,2,3,4], 2)
+      # {[1, 2], [3, 4]}
+  """
+
+
     def split(list, _count), do: return = {[], list}
 
     def cut(list, n) do
@@ -46,12 +56,12 @@ defmodule ListUtil do
       |> cut(c3)
     end
 
-    def mmcut(list, n)
-      when length(list) <= n, do: list
-
     def proj1(x) do
       elem(x,0)
     end
+
+    def mmcut(list, n)
+      when length(list) <= n, do: list
 
     def mmcut(list, n)
       when length(list) > n, do: mcut(list)

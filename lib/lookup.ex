@@ -1,7 +1,5 @@
 defmodule Lookup do
   use Application
-  import Ecto.Query
-  import ListUtil
 
   def main(args) do
     args |> parse_args |> process
@@ -70,6 +68,21 @@ defmodule Lookup do
 
   ## PROCESS ##
 
+
+  def display(notes) do
+    notes |> Enum.map(fn x -> IO.puts "\n" <> x end)
+    IO.puts "------"
+    IO.puts Enum.count(notes)
+    IO.puts ""
+  end
+
+  def display(notes, n) do
+      notes |> Enum.map(fn x -> IO.puts "\n" <> x end)
+      IO.puts "------"
+      IO.puts "#{Enum.count(notes)}/#{n}"
+      IO.puts ""
+    end
+
   def process([]) do
     IO.puts "No arguments given"
   end
@@ -80,24 +93,24 @@ defmodule Lookup do
   def process(:help) do
     IO.puts """
 
-      lookup foo              -- lookup notes containing 'foo' in text or contents
-      lookup foo bar          -- lookup notes containing 'foo' and 'bar' in text or contents
       lookup --title foo      -- search for notes with 'foo' in title
-      lookup --text foo       -- search for notes with 'foo' in text or contents
-      lookup --text foo bar   -- search for notes with 'foo and bar' in text or contents
+
+      lookup foo              -- search for notes containing 'foo' in text or contents
+      lookup foo bar          -- search for notes containing 'foo' and 'bar' in text or contents
+      lookup --sample foo     -- as above, but take a random sample of the notes found
+
+      lookup --random         -- return random selection of all notes
+      lookup --count          -- report number of notes in databasse
+
       lookup --add Magic :: It does not exist.
                               -- add a note with title 'Magic' and body 'It does not exist,'
-      lookup --count          -- report number of notes in databasse
-      lookup --random         -- return random selection of notes
 
       lookup -a ...           -- short form of 'lookup --add'
       lookup -c               -- short form of 'lookup --count'
       lookup -r               -- short form of 'lookup --random'
+      lookup -s               -- short form of 'lookup --sample'
       lookup -t ...           -- short form of 'lookup --title'
-      lookup -T ...           -- short form of 'lookup --text'
 
-      ---
-      * Not yet implemented
     """
 
   end
@@ -119,11 +132,8 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:title, arg}) do
-    notes = Lookup.Note.search_by_title(arg)
-    |> Enum.map(fn x -> IO.puts "\n" <> x end)
-    IO.puts "------"
-    IO.puts Enum.count(notes)
-    IO.puts ""
+    Lookup.Note.search_by_title(arg)
+    |> display
   end
 
   @doc """
@@ -131,11 +141,8 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:text, arg}) do
-    notes = Lookup.Note.search(arg)
-    |> Enum.map(fn x -> IO.puts "\n" <> x end)
-    IO.puts "------"
-    IO.puts Enum.count(notes)
-    IO.puts ""
+    Lookup.Note.search(arg)
+    |> display
   end
 
   def process({:sample, arg}) do
@@ -145,19 +152,13 @@ defmodule Lookup do
       n = length(notes)
       notes
       |> ListUtil.mmcut(sample_size)
-      |> Enum.map(fn x -> IO.puts "\n" <> x end)
-      IO.puts "------"
-      IO.puts "#{sample_size}/#{n}"
-      IO.puts ""
+      |> display(n)
     end
 
 
-
   def process(:count) do
-   # from p in Lookup.Note, select: count(p.id)
     notes = Lookup.Repo.all(Lookup.Note)
     IO.puts Enum.count(notes)
-   # IO.inspect(foo)
   end
 
   def process(:random) do
@@ -165,7 +166,6 @@ defmodule Lookup do
     Lookup.Note.random
     |> Enum.map(fn (item) -> IO.puts(hd(item) <> ":: " <> hd(tl(item)) <> "\n") end)
   end
-
 
 
   ## START ##

@@ -87,10 +87,6 @@ defmodule Lookup.Note do
 
    ################
 
-
-
-   ################
-
   def to_struct(record) do
     %{  title: record.title,
         content: record.content,
