@@ -1,6 +1,7 @@
 defmodule Lookup do
   use Application
   import Ecto.Query
+  import ListUtil
 
   def main(args) do
     args |> parse_args |> process
@@ -38,7 +39,7 @@ defmodule Lookup do
         text: :boolean,
         count: :boolean,
         random: :boolean,
-        random_search: :boolean],
+        sample: :boolean],
 
         aliases: [
             h: :help,
@@ -47,7 +48,7 @@ defmodule Lookup do
             T: :text,
             c: :count,
             r: :random,
-            rs: :random_search])
+            s: :sample])
 
       case parse do
 
@@ -57,7 +58,7 @@ defmodule Lookup do
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
         { [title: true], list, _ } -> {:title, list}
         { [text: true], list, _ } -> {:text, list}
-        { [random_search: true], list, _ } -> {:random_search, list}
+        { [sample: true], list, _ } -> {:sample, list}
         { _, list, _ } -> {:text, list}
 
         _ -> :help
@@ -118,12 +119,9 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:title, arg}) do
-    notes = Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
-    |> Lookup.Repo.all
-    notes |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+    notes = Lookup.Note.search_by_title(arg)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
-
-    IO.puts "---"
+    IO.puts "------"
     IO.puts Enum.count(notes)
     IO.puts ""
   end
@@ -133,22 +131,27 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:text, arg}) do
-    notes = Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
-    |> Lookup.Repo.all
-    |> Lookup.Note.filter_records_with_term_list(tl(arg))
-
-    notes |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+    notes = Lookup.Note.search(arg)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
-
-    IO.puts "---"
+    IO.puts "------"
     IO.puts Enum.count(notes)
     IO.puts ""
   end
 
-  process({:random_search, arg}) do
-    process(:text, arg)
+  def process({:sample, arg}) do
+      IO.puts "SAMPLING ..."
+      sample_size = 4
+      notes = Lookup.Note.search(arg)
+      n = length(notes)
+      notes
+      |> ListUtil.mmcut(sample_size)
+      |> Enum.map(fn x -> IO.puts "\n" <> x end)
+      IO.puts "------"
+      IO.puts "#{sample_size}/#{n}"
+      IO.puts ""
+    end
 
-  end
+
 
   def process(:count) do
    # from p in Lookup.Note, select: count(p.id)

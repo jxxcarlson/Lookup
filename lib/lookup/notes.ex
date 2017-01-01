@@ -1,5 +1,6 @@
 defmodule Lookup.Note do
   use Ecto.Schema
+  import Ecto.Query
 
   # https://github.com/devinus/poison
 
@@ -32,6 +33,19 @@ defmodule Lookup.Note do
   def add(title \\ "Untitled", content) do
     changeset(%Lookup.Note{}, %{title: title, content: content})
     |> Lookup.Repo.insert
+  end
+
+  def search_by_title(arg) do
+    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
+    |> Lookup.Repo.all
+    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+  end
+
+  def search(arg) do
+    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
+    |> Lookup.Repo.all
+    |> Lookup.Note.filter_records_with_term_list(tl(arg))
+    |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
   end
 
   ################

@@ -49,9 +49,14 @@ defmodule ListUtil do
     def mmcut(list, n)
       when length(list) <= n, do: list
 
+    def proj1(x) do
+      elem(x,0)
+    end
 
     def mmcut(list, n)
       when length(list) > n, do: mcut(list)
+        |> split(n)
+        |> proj1
 
 
 end
