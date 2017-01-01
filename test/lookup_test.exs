@@ -39,8 +39,8 @@ defmodule LookupTest do
      test "filter_records_with_term_list rselects the correct sublist when there are two distinct terms" do
        arg = ["c"]
        records = Ecto.Query.from(p in Lookup.Note, where: ilike(p.content, ^"%#{List.first(arg)}%")) |> Lookup.Repo.all
-       assert length(records) == 22
-       assert length(Lookup.Note.filter_records_with_term_list(records, ["1", "c"]))  == 1
+       # assert length(records) == 22
+       assert length(Lookup.Note.filter_records_with_term_list(records, ["343", "meters"]))  == 1
      end
 
      test "make record from string representing JSON" do

@@ -37,7 +37,8 @@ defmodule Lookup do
         title: :boolean,
         text: :boolean,
         count: :boolean,
-        random: :boolean],
+        random: :boolean,
+        random_search: :boolean],
 
         aliases: [
             h: :help,
@@ -45,7 +46,8 @@ defmodule Lookup do
             t: :title,
             T: :text,
             c: :count,
-            r: :random])
+            r: :random,
+            rs: :random_search])
 
       case parse do
 
@@ -55,6 +57,7 @@ defmodule Lookup do
         { [add: true], list, _ } -> {:add, Enum.join(list, " ")}
         { [title: true], list, _ } -> {:title, list}
         { [text: true], list, _ } -> {:text, list}
+        { [random_search: true], list, _ } -> {:random_search, list}
         { _, list, _ } -> {:text, list}
 
         _ -> :help
@@ -117,7 +120,6 @@ defmodule Lookup do
   def process({:title, arg}) do
     notes = Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
     |> Lookup.Repo.all
-
     notes |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
     |> Enum.map(fn x -> IO.puts "\n" <> x end)
 
@@ -141,6 +143,11 @@ defmodule Lookup do
     IO.puts "---"
     IO.puts Enum.count(notes)
     IO.puts ""
+  end
+
+  process({:random_search, arg}) do
+    process(:text, arg)
+
   end
 
   def process(:count) do
