@@ -1,6 +1,8 @@
 defmodule Lookup.Note do
   use Ecto.Schema
   import Ecto.Query
+  alias Lookup.Repo
+  alias Lookup.Note
 
   # https://github.com/devinus/poison
 
@@ -31,20 +33,20 @@ defmodule Lookup.Note do
   """
 
   def add(title \\ "Untitled", content) do
-    changeset(%Lookup.Note{}, %{title: title, content: content})
-    |> Lookup.Repo.insert
+    changeset(%Note{}, %{title: title, content: content})
+    |> Repo.insert
   end
 
   def search_by_title(arg) do
-    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
-    |> Lookup.Repo.all
+    Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%"))
+    |> Repo.all
     |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
   end
 
   def search(arg) do
-    Ecto.Query.from(p in Lookup.Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
-    |> Lookup.Repo.all
-    |> Lookup.Note.filter_records_with_term_list(tl(arg))
+    Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
+    |> Repo.all
+    |> Note.filter_records_with_term_list(tl(arg))
     |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
   end
 
@@ -100,8 +102,8 @@ defmodule Lookup.Note do
     end
 
   def record_to_JSON(id) do
-    Lookup.Note
-    |> Lookup.Repo.get(id)
+    Note
+    |> Repo.get(id)
     |> to_struct
     |> Poison.encode!
   end
@@ -112,11 +114,11 @@ defmodule Lookup.Note do
 
   def insert_from_json(str) do
     json = string_to_JSON(str)
-    Lookup.Note.add(json["title"], json["content"])
+    Note.add(json["title"], json["content"])
   end
 
   def random(p \\ 10) do
-    {_ok, result} = Ecto.Adapters.SQL.query(Lookup.Repo, "SELECT title, content FROM notes TABLESAMPLE BERNOULLI(#{p})")
+    {_ok, result} = Ecto.Adapters.SQL.query(Repo, "SELECT title, content FROM notes TABLESAMPLE BERNOULLI(#{p})")
     result.rows
   end
 
