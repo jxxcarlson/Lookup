@@ -122,9 +122,11 @@ defmodule Lookup do
   after which Lookup.Note.add(TiTLE, CONTENT) is called.
   """
   def process({:add, arg}) do
-    [title, content] = String.split( arg, ["::"]) |> Enum.map(fn x -> String.trim(x) end)
-    Lookup.Note.add(title, content)
-    IO.puts "Added: #{title}"
+    String.split( arg, ["::"]) |> Enum.map(fn x -> String.trim(x) end) |>
+    case  do
+       [title, content] -> [Lookup.Note.add(title, content), IO.puts "Added: #{title}"]
+       _ -> IO.puts "Error -- did you forget to put '::' ?"
+    end
   end
 
   @doc """
