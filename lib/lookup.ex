@@ -57,9 +57,8 @@ defmodule Lookup do
         { [title: true], list, _ } -> {:title, list}
         { [text: true], list, _ } -> {:text, list}
         { [sample: true], list, _ } -> {:sample, list}
-        { _, list, _ } -> {:text, list}
+        { _, list, _ } -> :help
 
-        _ -> :help
 
       end
 
