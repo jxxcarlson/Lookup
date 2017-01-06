@@ -1,5 +1,7 @@
 defmodule Lookup do
   use Application
+  alias Lookup.Repo
+  alias Lookup.Note
 
   def main(args) do
     args |> parse_args |> process
@@ -57,7 +59,8 @@ defmodule Lookup do
         { [title: true], list, _ } -> {:title, list}
         { [text: true], list, _ } -> {:text, list}
         { [sample: true], list, _ } -> {:sample, list}
-        { _, list, _ } -> :help
+        { _, list, _ } -> {:text, list}
+        _ -> :help
 
 
       end
@@ -124,7 +127,7 @@ defmodule Lookup do
     String.split( arg, ["::"])
     |> Enum.map(fn x -> String.trim(x) end)
     |> case  do
-       [title, content] -> [Lookup.Note.add(title, content), IO.puts "Added: #{title}"]
+       [title, content] -> [Note.add(title, content), IO.puts "Added: #{title}"]
        _ -> IO.puts "Error -- did you forget to put '::' ?"
     end
   end
@@ -134,7 +137,7 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:title, arg}) do
-    Lookup.Note.search_by_title(arg)
+    Note.search_by_title(arg)
     |> display
   end
 
@@ -143,14 +146,13 @@ defmodule Lookup do
   case insenstie and not strict.  Thus "speed" matches "Speed of light"
   """
   def process({:text, arg}) do
-    Lookup.Note.search(arg)
-    |> display
+    Note.search(arg) |> display
   end
 
   def process({:sample, arg}) do
       IO.puts "SAMPLING ..."
       sample_size = 4
-      notes = Lookup.Note.search(arg)
+      notes = Note.search(arg)
       n = length(notes)
       notes
       |> ListUtil.mmcut(sample_size)
@@ -159,13 +161,13 @@ defmodule Lookup do
 
 
   def process(:count) do
-    notes = Lookup.Repo.all(Lookup.Note)
+    notes = Repo.all(Note)
     IO.puts Enum.count(notes)
   end
 
   def process(:random) do
     IO.puts ""
-    Lookup.Note.random
+    Note.random
     |> Enum.map(fn (item) -> IO.puts(hd(item) <> ":: " <> hd(tl(item)) <> "\n") end)
   end
 
@@ -176,7 +178,7 @@ defmodule Lookup do
     import Supervisor.Spec, warn: false
 
     children = [
-      supervisor(Lookup.Repo, []),
+      supervisor(Repo, []),
     ]
 
     opts = [strategy: :one_for_one, name: Lookup.Supervisor]

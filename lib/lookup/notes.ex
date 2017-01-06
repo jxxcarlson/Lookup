@@ -43,11 +43,18 @@ defmodule Lookup.Note do
     |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
   end
 
-  def search(arg) do
+  def search_with_non_empty_arg(arg) do
     Ecto.Query.from(p in Note, where: ilike(p.title, ^"%#{List.first(arg)}%") or ilike(p.content, ^"%#{List.first(arg)}%"))
     |> Repo.all
     |> Note.filter_records_with_term_list(tl(arg))
     |> Enum.map(fn x -> x.title <> ":: " <> x.content end)
+  end
+
+  def search(arg) do
+    case arg do
+      [] -> []
+      _ -> search_with_non_empty_arg(arg)
+    end
   end
 
   ################
